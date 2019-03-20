@@ -20,8 +20,8 @@ end
 ##############################################
 
 def sign_in
-	puts "Please choose:\n1. Sign In\n2. New Customer"
-	choice = gets.chomp.to_i
+	puts 
+	choice = (prompt "Please choose:\n1. Sign In\n2. New Customer\n").to_i
 
 	if choice == 1
 		pin_entry
@@ -61,12 +61,9 @@ end
 
 def new_cust_reg
 	puts "Welcome new customer!\nPlease provide the following information:"
-	print "Your first name: "
-	firstname = gets.chomp
-	print "Your last name: "
-	lastname = gets.chomp
-	print "Choose a 4-digit PIN: "
-	pin = gets.chomp
+	firstname = prompt "Your first name: "
+	lastname = prompt "Your last name: "
+	pin = prompt "Choose a 4-digit PIN: "
 	new_customer = Customer.new(firstname,lastname,pin)
 	@customers.push(new_customer)
 	File.open("customers.txt", "w"){|f| f.write(Marshal.dump(@customers))}
@@ -103,8 +100,7 @@ end
 
 def create_account(customer)
 	acct_type = choose_account_type
-	print "Your initial deposit will be? $"
-	balance = gets.chomp.to_f
+	balance = (prompt "Your initial deposit will be? $").to_f
 	acct_num = @accounts.length + 1
 	new_account = Account.new(customer, balance, acct_type, acct_num)
 	@accounts.push(new_account)
@@ -116,8 +112,7 @@ end
 
 def choose_account_type
 	puts "What type of account would you like to open?"
-	puts "1. Checking\n2. Savings\n3. Money Market"
-	acct_type = gets.chomp.to_i
+	acct_type = (prompt "1. Checking\n2. Savings\n3. Money Market\n").to_i
 	case acct_type
 		when 1
 			acct_type = "Checking"
@@ -146,8 +141,7 @@ def account_lookup(customer)
 
 	if account_found == false
 		puts "No matching accounts found."
-		puts "Try again? [y/n]"
-		choice = gets.chomp.downcase
+		choice = (prompt "Try again? [y/n]").downcase
 		choice == "y" ? account_lookup : main_menu(customer)
 	else
 		puts "Which account do you want to access?"
@@ -196,8 +190,7 @@ end
 
 # LEFT OFF HERE
 def make_deposit(acct)
-	puts "How much would you like to deposit today?"
-	deposit = gets.chomp.to_f
+	deposit = (prompt "How much would you like to deposit today?").to_f
 
 	acct.deposit(deposit)
 
@@ -207,8 +200,7 @@ def make_deposit(acct)
 end
 
 def make_withdrawal(acct)
-	puts "How much would you like to withdrawal today?"
-	withdrawal = gets.chomp.to_f
+	withdrawal = (prompt "How much would you like to withdrawal today?").to_f
 
 	if withdrawal > acct.balance
 		puts "Insufficient funds."
@@ -226,8 +218,7 @@ def make_withdrawal(acct)
 end
 
 def return_to_account_menu(acct)
-	puts "Return to the Account Menu? [y/n]"
-	choice = gets.chomp.downcase
+	choice = (prompt "Return to the Account Menu? [y/n]").downcase
 	if choice == "y"
 		puts `clear`
 		account_menu(acct)
@@ -238,8 +229,7 @@ def return_to_account_menu(acct)
 end
 
 def return_to_main_menu(customer)
-	puts "Return to Main Menu? [y/n]"
-	choice = gets.chomp.downcase
+	choice = (prompt "Return to Main Menu? [y/n]").downcase
 	if choice == "y"
 		puts `clear`
 		main_menu(customer)
@@ -259,6 +249,11 @@ end
 def session_timeout
 	# End session if too much time has passed
 	# Maybe doesn't need to be it's own method - see examples.rb
+end
+
+def prompt(*args)
+  print(*args)
+  gets.chomp
 end
 
 puts "Welcome to Goliath National Bank"
